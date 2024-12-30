@@ -1,33 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>НЕСКУЧНО</title>
+    <!-- Подключаем Telegram WebApp JS, чтобы иметь доступ к window.Telegram -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        html, body {
             margin: 0;
             padding: 0;
+            font-family: Arial, sans-serif;
             background: linear-gradient(45deg, #007CBE, #FFF7AE);
+            min-height: 100vh;
             color: #fff;
             text-align: center;
         }
+
         .tab-content {
             padding: 20px;
+            margin-bottom: 70px; /* отступ под нижнюю панель */
         }
+
         .tabs {
             display: flex;
             position: fixed;
             bottom: 0;
             width: 100%;
             background: #007CBE;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
         }
         .tab {
             flex: 1;
             text-align: center;
-            padding: 10px 0;
+            padding: 12px 0;
             cursor: pointer;
             color: #FFF7AE;
         }
@@ -35,14 +42,26 @@
             background: #FFF7AE;
             color: #007CBE;
         }
+
+        a {
+            color: #FFF7AE;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
     <div id="content" class="tab-content">
-        <h1>НЕСКУЧНО</h1>
-        <p>Добро пожаловать в приложение! Выберите вкладку ниже.</p>
+        <!-- При первом заходе видим вкладку "О приложении" -->
+        <h1>О приложении</h1>
+        <p>
+            Посетите наш сайт:
+            <a href="http://xn--e1akhcfpp6a.xn--90a1af.xn--p1ai/events/" target="_blank">
+                НЕСКУЧНО
+            </a>
+        </p>
     </div>
 
+    <!-- Нижняя панель вкладок -->
     <div class="tabs">
         <div id="tab1" class="tab active" onclick="showTab(1)">О приложении</div>
         <div id="tab2" class="tab" onclick="showTab(2)">Друзья</div>
@@ -50,6 +69,15 @@
     </div>
 
     <script>
+        // Достаём объект WebApp из Telegram
+        const tg = window.Telegram.WebApp;
+        // Расширяем WebApp, чтобы занять всё доступное пространство
+        tg.expand();
+
+        // Если пользователь разрешил передачу своих данных,
+        // то в tg.initDataUnsafe у нас будет user-объект.
+        const user = tg.initDataUnsafe?.user || {};
+
         const content = document.getElementById('content');
         const tabs = document.querySelectorAll('.tab');
 
@@ -58,21 +86,42 @@
             document.getElementById(`tab${tabIndex}`).classList.add('active');
 
             if (tabIndex === 1) {
+                // О приложении
                 content.innerHTML = `
                     <h1>О приложении</h1>
-                    <p>Посетите наш сайт: <a href="http://xn--e1akhcfpp6a.xn--90a1af.xn--p1ai/events/" style="color: #FFF7AE;">НЕСКУЧНО</a></p>
+                    <p>
+                        Посетите наш сайт:
+                        <a href="http://xn--e1akhcfpp6a.xn--90a1af.xn--p1ai/events/" target="_blank">
+                            НЕСКУЧНО
+                        </a>
+                    </p>
                 `;
             } else if (tabIndex === 2) {
+                // Друзья
+                // Просто показываем, как можем вывести имя и username в интерфейсе
                 content.innerHTML = `
                     <h1>Друзья</h1>
                     <p>Добавьте друзей из Telegram и наслаждайтесь общением!</p>
+                    <p>
+                        <strong>Ваше имя:</strong> ${user.first_name || 'Неизвестно'}
+                        <br>
+                        <strong>Ваш username:</strong> ${user.username || 'Неизвестно'}
+                    </p>
+                    <button onclick="showAlert()">Проверить имя</button>
                 `;
             } else if (tabIndex === 3) {
+                // Задания
                 content.innerHTML = `
                     <h1>Задания</h1>
                     <p>Ежедневные задания помогут вам оставаться активным!</p>
+                    <p><strong>Задание #1:</strong> Перейти по ссылке на первой странице.</p>
                 `;
             }
+        }
+
+        // Функция, которая просто показывает alert с именем пользователя
+        function showAlert() {
+            alert("Ваше имя (first_name): " + (user.first_name || "Нет данных"));
         }
     </script>
 </body>
