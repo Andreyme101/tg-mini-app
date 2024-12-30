@@ -43,10 +43,6 @@
             color: #007CBE;
         }
 
-        a {
-            color: #FFF7AE;
-            text-decoration: none;
-        }
         button {
             margin-top: 10px;
             padding: 10px 16px;
@@ -59,6 +55,15 @@
         }
         button:hover {
             background-color: #ffe46a;
+        }
+
+        /* Если хотите, можно ограничить iframe по высоте (чтобы влезало в экран),
+           например 65-75vh (процентов от высоты экрана).
+        */
+        .iframe-container {
+            width: 100%;
+            height: 70vh;
+            border: none;
         }
     </style>
 </head>
@@ -89,7 +94,6 @@
 
         const content = document.getElementById('content');
         const tabs = document.querySelectorAll('.tab');
-        const pointsDisplay = document.getElementById('pointsDisplay');
 
         function showTab(tabIndex) {
             currentTabIndex = tabIndex;
@@ -103,19 +107,14 @@
                     <p>В скором времени вы сможете обменять баллы на плюшки в приложении.</p>
                 `;
             } else if (tabIndex === 2) {
-                // Вкладка "О приложении"
+                // Вкладка "О приложении" - сразу встраиваем сайт
                 content.innerHTML = `
                     <h1>О приложении</h1>
-                    <h2 style="font-size: 1.5em; color: #FFF7AE;">
-                        Посетите наш сайт:
-                        <a
-                          href="http://xn--e1akhcfpp6a.xn--90a1af.xn--p1ai/events/"
-                          target="_blank"
-                          style="color: #FFF7AE; font-size: 1.25em;"
-                        >
-                            НЕСКУЧНО
-                        </a>
-                    </h2>
+                    <iframe
+                        src="http://xn--e1akhcfpp6a.xn--90a1af.xn--p1ai/events/"
+                        class="iframe-container"
+                    >
+                    </iframe>
                 `;
             } else if (tabIndex === 3) {
                 // Вкладка "Задания"
