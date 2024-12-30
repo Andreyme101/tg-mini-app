@@ -18,7 +18,7 @@ async def start_command(message: types.Message):
             [
                 InlineKeyboardButton(
                     text="Открыть Mini App",
-                    web_app=WebAppInfo(url="https://b94c-178-66-129-153.ngrok-free.app")
+                    web_app=WebAppInfo(url="https://tg-mini-app-7qi3.onrender.com")
                 )
             ]
         ]
