@@ -47,81 +47,114 @@
             color: #FFF7AE;
             text-decoration: none;
         }
+        button {
+            margin-top: 10px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            background-color: #FFF7AE;
+            color: #007CBE;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #ffe46a;
+        }
     </style>
 </head>
 <body>
     <div id="content" class="tab-content">
-        <!-- При первом заходе видим вкладку "О приложении" -->
-        <h1>О приложении</h1>
-        <p>
-            Посетите наш сайт:
-            <a href="http://xn--e1akhcfpp6a.xn--90a1af.xn--p1ai/events/" target="_blank">
-                НЕСКУЧНО
-            </a>
-        </p>
+        <!-- При первом заходе видим вкладку "Баллы" -->
+        <h1 style="font-size: 48px;" id="pointsDisplay">0</h1>
+        <p>В скором времени вы сможете обменять баллы на плюшки в приложении.</p>
     </div>
 
     <!-- Нижняя панель вкладок -->
     <div class="tabs">
-        <div id="tab1" class="tab active" onclick="showTab(1)">О приложении</div>
-        <div id="tab2" class="tab" onclick="showTab(2)">Друзья</div>
+        <div id="tab1" class="tab active" onclick="showTab(1)">Баллы</div>
+        <div id="tab2" class="tab" onclick="showTab(2)">О приложении</div>
         <div id="tab3" class="tab" onclick="showTab(3)">Задания</div>
     </div>
 
     <script>
-        // Достаём объект WebApp из Telegram
+        // Подключаемся к Telegram WebApp API
         const tg = window.Telegram.WebApp;
-        // Расширяем WebApp, чтобы занять всё доступное пространство
-        tg.expand();
+        tg.expand(); // расширяем веб-приложение
 
-        // Если пользователь разрешил передачу своих данных,
-        // то в tg.initDataUnsafe у нас будет user-объект.
-        const user = tg.initDataUnsafe?.user || {};
+        // Глобальная переменная для счёта баллов
+        let points = 0;
+
+        // Текущая вкладка
+        let currentTabIndex = 1;
 
         const content = document.getElementById('content');
         const tabs = document.querySelectorAll('.tab');
+        const pointsDisplay = document.getElementById('pointsDisplay');
 
         function showTab(tabIndex) {
+            currentTabIndex = tabIndex;
             tabs.forEach(tab => tab.classList.remove('active'));
             document.getElementById(`tab${tabIndex}`).classList.add('active');
 
             if (tabIndex === 1) {
-                // О приложении
+                // Вкладка "Баллы"
                 content.innerHTML = `
-                    <h1>О приложении</h1>
-                    <p>
-                        Посетите наш сайт:
-                        <a href="http://xn--e1akhcfpp6a.xn--90a1af.xn--p1ai/events/" target="_blank">
-                            НЕСКУЧНО
-                        </a>
-                    </p>
+                    <h1 style="font-size: 48px;" id="pointsDisplay">${points}</h1>
+                    <p>В скором времени вы сможете обменять баллы на плюшки в приложении.</p>
                 `;
             } else if (tabIndex === 2) {
-                // Друзья
-                // Просто показываем, как можем вывести имя и username в интерфейсе
+                // Вкладка "О приложении"
                 content.innerHTML = `
-                    <h1>Друзья</h1>
-                    <p>Добавьте друзей из Telegram и наслаждайтесь общением!</p>
-                    <p>
-                        <strong>Ваше имя:</strong> ${user.first_name || 'Неизвестно'}
-                        <br>
-                        <strong>Ваш username:</strong> ${user.username || 'Неизвестно'}
-                    </p>
-                    <button onclick="showAlert()">Проверить имя</button>
+                    <h1>О приложении</h1>
+                    <h2 style="font-size: 1.5em; color: #FFF7AE;">
+                        Посетите наш сайт:
+                        <a
+                          href="http://xn--e1akhcfpp6a.xn--90a1af.xn--p1ai/events/"
+                          target="_blank"
+                          style="color: #FFF7AE; font-size: 1.25em;"
+                        >
+                            НЕСКУЧНО
+                        </a>
+                    </h2>
                 `;
             } else if (tabIndex === 3) {
-                // Задания
+                // Вкладка "Задания"
                 content.innerHTML = `
                     <h1>Задания</h1>
-                    <p>Ежедневные задания помогут вам оставаться активным!</p>
-                    <p><strong>Задание #1:</strong> Перейти по ссылке на первой странице.</p>
+                    <p>
+                        <strong>Задание #1:</strong> Перейти по ссылке на первой странице.
+                        <button onclick="completeTask1()">Перейти</button>
+                    </p>
+                    <p>
+                        <strong>Задание #2:</strong> Пригласить друзей
+                        <button onclick="completeTask2()">Пригласить</button>
+                    </p>
                 `;
             }
         }
 
-        // Функция, которая просто показывает alert с именем пользователя
-        function showAlert() {
-            alert("Ваше имя (first_name): " + (user.first_name || "Нет данных"));
+        // При первом открытии отображаем вкладку 1
+        showTab(1);
+
+        // Задание #1: перейти по ссылке
+        function completeTask1() {
+            points += 5;
+            alert("Задание #1 выполнено! Вам начислено 5 баллов.");
+            updatePointsDisplay();
+        }
+
+        // Задание #2: пригласить друзей
+        function completeTask2() {
+            points += 5;
+            alert("Задание #2 выполнено! Реферальная ссылка: https://t.me/ВашБот?start=REF_CODE\nВам начислено 5 баллов.");
+            updatePointsDisplay();
+        }
+
+        function updatePointsDisplay() {
+            // Если пользователь на вкладке «Баллы», перерисуем содержимое
+            if (currentTabIndex === 1) {
+                showTab(1);
+            }
         }
     </script>
 </body>
